@@ -1,12 +1,15 @@
 /*!
- * GraphRaphael v0.1.0 (https://github.com/lastseal/graph-raphael)
- * Copyright 2011-2014 Lastseal SpA.
- * Licensed under MIT (https://github.com/lastseal/graph-raphael/blob/master/LICENSE)
+ * GraphRaphael v0.1.0 (https://github.com/rarconte/graph-raphael)
+ * Copyright 2014-2015 Rodrigo Arriaza.
+ * Licensed under MIT (https://github.com/rarconte/graph-raphael/blob/master/LICENSE)
  */
 
 !(function (exports){
 
-    var Node = function(data, template, dx, dy) {
+    var Node = function(data, template, events, dx, dy) {
+
+        this._id = data.id
+        this._events = events
 
         this._properties = {};
         this._data = [];
@@ -124,6 +127,15 @@
         this._objects.forEach(function(item) {
             item.translate(dx+that.dx, dy+that.dy);
         });
+
+        for (var e in this._events) {
+
+            if (e == "click") {
+                this._objects.click( function(){
+                    that._events.click(that._id)
+                })
+            }
+        }
     }
 
     Node.prototype.update = function(properties) {
@@ -143,7 +155,7 @@
         }
     }
 
-    var Tree = function(config) {
+    var Tree = function(config, events) {
 
         this._nodes = {}
         this._edges = []
@@ -184,7 +196,7 @@
             max_dx = dx > max_dx ? dx : max_dx
             max_dy = dy > max_dy ? dy : max_dy
 
-            this._nodes[e.id] = new Node(e, this._nodeTemplate, dx, dy);
+            this._nodes[e.id] = new Node(e, this._nodeTemplate, events, dx, dy);
 
             if ("parent" in e && e.parent in this._nodes) {
                 this._nodes[e.parent].addChild(this._nodes[e.id]);
@@ -199,23 +211,36 @@
             this._height = this._nodeTemplate[0].height + max_dy;
         }
     }
-    
-    Tree.prototype.renderTo = function(container, options) {
 
-        if (typeof options == "undefined") {
-            options = {dx: 0, dy:0, width: this._width, height: this._height};
-        }
+    Tree.prototype.width = function() {
+        return this._width;
+    }
 
-        this._paper = Raphael(container, options.width, options.height);
-        /*
-        this._paper.setViewBox(0, 0, width, height, true);
-        this._paper.setSize(window.innerWidth, window.innerHeight);
-        */
+    Tree.prototype.height = function() {
+        return this._height;
+    }
+
+    Tree.prototype.onNode = function(event, handler) {
+
         for (var key in this._nodes) {
-            this._nodes[key].render(this._paper, options.dx, options.dy);
+            this._nodes[key].click(handler);
         }
     }
     
+    Tree.prototype.renderTo = function(container) {
+
+        this._paper = Raphael(container, this._width, this._height);
+        
+        for (var key in this._nodes) {
+            this._nodes[key].render(this._paper, 0, 0);
+        }
+    }
+
+    Tree.prototype.setSize = function(width, height) {
+
+        this._paper.setViewBox(0, 0, this._width, this._height, true);
+        this._paper.setSize(width, height);
+    }
 
     Tree.prototype.update = function(properties) {
 
@@ -232,8 +257,8 @@
 
     exports.graph = {
 
-        Tree: function(config) {
-            return new Tree(config)
+        Tree: function(config, events) {
+            return new Tree(config, events)
         }
     }
 
