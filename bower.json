@@ -1,5 +1,5 @@
 {
-  "name": "GraphRaphael",
+  "name": "graph-raphael",
   "version": "0.1.0",
   "homepage": "https://github.com/rarconte/graph-raphael",
   "description": "JavaScript Graph Library",
@@ -19,6 +19,7 @@
   "ignore": [
     "web/",
     "README.md",
-    "package.json"
+    "package.json",
+    ".git"
   ]
 }
