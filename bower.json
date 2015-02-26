@@ -12,5 +12,13 @@
     "Rodrigo Arriaza"
   ],
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "raphael": "~2.1.0"
+  },
+  "ignore": [
+    "web/",
+    "README.md",
+    "package.json"
+  ]
 }
