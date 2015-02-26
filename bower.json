@@ -12,7 +12,7 @@
     "Rodrigo Arriaza"
   ],
   "license": "MIT",
-  "private": true,
+  "private": false,
   "dependencies": {
     "raphael": "~2.1.0"
   },
