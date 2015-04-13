@@ -1,4 +1,4 @@
-graph-raphael
+plot-raphael
 =============
 
-JavaScript Graph Library
+JavaScript Plot Library
